@@ -3,7 +3,7 @@
 # We create classes for the different types of rings
 import numpy as np
 from functools import partial
-from Rings import Zn
+from rings import Zn
 
 # We impose the following qualities on our ring objects:
 # Implementation of *, + and -
@@ -67,7 +67,8 @@ def polyLongDivide(dividend, divisor) :
         destroyLeading()
     return (quotient, remainder)
 
-quotient, remainder = polyLongDivide(dividend, divisor)
+while (len(divisor) > 1) :
+    dividend, divisor = polyLongDivide(dividend, divisor)
 
-print("The quotient is: ", [str(x) for x in quotient])
-print("The remainder is: ", [str(x) for x in remainder])
+print("The quotient is: ", [str(x) for x in dividend])
+print("The remainder is: ", [str(x) for x in divisor])
