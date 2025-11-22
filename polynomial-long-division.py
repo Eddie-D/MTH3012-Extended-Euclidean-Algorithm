@@ -66,12 +66,18 @@ md = open("ExtendedEuclideanOutput.md", "w")
 md.write("# Extended Euclidean Algorithm \n")
 md.write(f"### We find the gcd of ${e1}$ and ${e2}$\n\n")
 results = []
+quotients = []
+divisors = []
+dividends = []
 remainder = None
 while (remainder is None or remainder != ring.zero) :
     quotient, remainder = ring.euclideanDivision(dividend, divisor)
     print(f"Quotient: {quotient}, Remainder: {remainder}")
     s = f"1. ${dividend} = ({quotient})({divisor}) + ({remainder})$"
     results.append([dividend, quotient, divisor, remainder])
+    quotients.append(quotient)
+    divisors.append(divisor)
+    dividends.append(dividend)
     print(s)
     md.write(s + "\n\n")
 
@@ -88,16 +94,27 @@ md.write(f"### We use the Extended Euclidean algorithm to find coefficients $\mu
 mu = ring.unit
 lam = ring.unit
 # Remove result with zero remainder
-results.pop()
-r, end, q, oor = results[0]
-# Start at bottom for backwards substitution
 results.reverse()
+results.pop()
+quotients.reverse()
+quotients.pop(0)
+divisors.reverse()
+divisors
+dividends.reverse()
+dividends
 
-for [dividend, quotient, divisor, remainder] in results :
-    t = f"{r} = {end} - ({q})({oor})"
-    s = f"${remainder} = {dividend} - ({quotient})({divisor})$"
-    oor = end
-    end = (ring.zero - q) * dividend
-    q = ring.unit + (q*quotient)
-    print(f"The overall is : {end - (q * oor)}")
-    md.write(f"${t}$\n\n")
+print(f"Quotients: {[str(q) for q in quotients]}")
+
+def extendedEuclidean(n) :
+    if n == 0 :
+        return (ring.unit,-quotients[0])
+    mu, lamb = extendedEuclidean(n-1)
+    md.write(f"${gcd} = ({lamb})({divisors[n]})+({mu})({dividends[n]})$\n\n")
+    # md.write(f"{gcd} = ${lamb * divisors[n]+ mu * dividends[n]}$\n\n")
+    return (lamb, (mu - (quotients[n] * lamb)))
+
+lamb, mu = extendedEuclidean(len(quotients) - 1)
+
+md.write(f"${gcd}$ = $({lamb})({e1}) + ({mu})({e2})$")
+
+print(f"Overall: {(lamb*e1) + (mu*e2)}")

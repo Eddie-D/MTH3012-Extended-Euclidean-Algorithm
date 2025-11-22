@@ -138,8 +138,8 @@ class PolyRing :
                     case "f" | "f[X]" | "fx" | "f(x)":
                         ring = PolyRing()
         self.ring = ring
-        self.zero = Polynomial(ring, [ring.zero])
-        self.unit = Polynomial(ring, [ring.unit])
+        self.zero = Polynomial(ring, [ring.zero], self.indeterminate)
+        self.unit = Polynomial(ring, [ring.unit], self.indeterminate)
     
     def consoleElement (self) :
         print("Enter a degree for the polynomial")
@@ -159,7 +159,7 @@ class PolyRing :
 
         while(divisor.length() <= remainder.length()) :
             # Create constant polynomial of the division of the two highest coefficients
-            mult = Polynomial(self.ring, [self.ring.zero for _ in range(remainder.length() - divisor.length())] + [remainder.highestCoeff() / divisor.highestCoeff()])
+            mult = Polynomial(self.ring, [self.ring.zero for _ in range(remainder.length() - divisor.length())] + [remainder.highestCoeff() / divisor.highestCoeff()], self.indeterminate)
             arr1 = [self.ring.zero for _ in range(remainder.length() - divisor.length())]
             arr2 = [remainder.highestCoeff() / divisor.highestCoeff()]
             arr = arr1 + arr2
@@ -215,7 +215,7 @@ class Polynomial :
             return l + [self.ring.zero for _ in range(length - len(l))]
         
         p1, p2 = withLeadingZeroes(self.values, length), withLeadingZeroes(other.values, length)
-        return Polynomial(self.ring, [op(p1[i], p2[i]) for i in range(length)])
+        return Polynomial(self.ring, [op(p1[i], p2[i]) for i in range(length)], self.indeterminate)
         
     def __add__ (self, other) :
         return self.coeffwise(other, operator.add)
@@ -224,9 +224,9 @@ class Polynomial :
         return self.coeffwise(other, operator.sub)
     
     def __mul__(self, other) :
-        total = Polynomial(self.ring, [self.ring.zero])
+        total = Polynomial(self.ring, [self.ring.zero], self.indeterminate)
         for i, x in enumerate(self.values) :
-            total = total + Polynomial(self.ring, [self.ring.zero for _ in range(i)] + [x*y for y in other.values])
+            total = total + Polynomial(self.ring, [self.ring.zero for _ in range(i)] + [x*y for y in other.values], self.indeterminate)
             # print(f"Total: {total}")
         return total
     
@@ -239,6 +239,9 @@ class Polynomial :
             if x != y :
                 return False
         return True
+
+    def __neg__(self) :
+        return Polynomial(self.ring, [-x for x in self.values], self.indeterminate)
     
     
     # Not the traditional euclidean function in F[X] which is deg(f), but is a valid one nonetheless
