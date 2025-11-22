@@ -69,7 +69,7 @@ while (remainder is None or remainder != ring.zero) :
 gcd = dividend
 md.write(f"Overall the gcd is ${gcd}$\n\n")
 
-md.write(f"### We use the Extended Euclidean algorithm to find coefficients $\mu$, $\lambda$ s.t. $\mu ({divisor}) + \lambda ({dividend}) = {gcd}$\n\n")
+md.write(f"### We use the Extended Euclidean algorithm to find coefficients $\lambda$, $\mu$ s.t. $\lambda ({dividend0}) + \mu ({divisor0}) = {gcd}$\n\n")
 
 # Remove result with zero remainder
 results.reverse()
@@ -78,16 +78,17 @@ results.pop(0)
 def extendedEuclidean(n) :
     dividend, quotient, divisor = results[n]
     if n == 0 :
-        mu, lamb = ring.unit,-quotient
+        lamb, mu = ring.unit,-quotient
     else :
+        # Swap and calculate new mu
         mu, lamb = extendedEuclidean(n-1)
-        mu, lamb = (lamb, (mu - (quotient * lamb)))
+        mu = mu - (quotient * lamb)
 
-    md.write(f"${gcd} = ({lamb})({divisor}) + ({mu})({dividend})$\n\n")
-    return (mu, lamb)
+    md.write(f"${gcd} = ({lamb})({dividend}) + ({mu})({divisor})$\n\n")
+    return (lamb, mu)
 
 lamb, mu = extendedEuclidean(len(results) - 1)
 
-md.write(f"**Overall we have:** ${gcd} = ({lamb})({dividend0}) + ({mu})({divisor0})$\n\n")
+md.write(f"### Overall we have: $\lambda = ({lamb})$ and $\mu = ({mu})$\n\n")
 
-print(f"Overall: {(lamb*dividend0) + (mu*divisor0)}")
+print(f"Checksum, {gcd} = {(lamb*dividend0) + (mu*divisor0)}")
