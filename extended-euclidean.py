@@ -84,7 +84,7 @@ def extendedEuclidean(n) :
         mu, lamb = extendedEuclidean(n-1)
         mu = mu - (quotient * lamb)
 
-    md.write(f"${gcd} = ({lamb})({dividend}) + ({mu})({divisor})$\n\n")
+    md.write(f"1. ${gcd} = ({lamb})({dividend}) + ({mu})({divisor})$\n\n")
     return (lamb, mu)
 
 lamb, mu = extendedEuclidean(len(results) - 1)
