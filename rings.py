@@ -68,7 +68,7 @@ class Zp:
         return self.value == other.value and self.p == other.p
 
 class Frac :
-    def __init__ (self, num, den) :
+    def __init__ (self, num, den=1) :
         if den == 0 : raise Exception("Fraction with denominator of zero")
         # Re-write the fraction as an irreducible
         # Ensure den is non-negative (solves issue of -1/-1 instead of 1/1)
@@ -99,7 +99,7 @@ class Frac :
         # Can check numerator and denominator equal as we store fractions uniquely as irreducibles with negatives ontop
         return self.num == other.num and self.den == other.den
 
-# FractionRing is static as it doesn't need paramaters at initialisation (here fractions are only over the integers, not an arbitrary ring)
+# FractionRing is static as it doesn't need paramaters at initialisation (here fractions are only over the integers, not an integral domain)
 class FractionRing :
     zero = Frac(0,1)
     unit = Frac(1,1)
