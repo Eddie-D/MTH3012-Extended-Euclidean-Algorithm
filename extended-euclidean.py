@@ -78,7 +78,7 @@ results.pop(0)
 def extendedEuclidean(n) :
     dividend, quotient, divisor = results[n]
     if n == 0 :
-        lamb, mu = ring.unit,-quotient
+        lamb, mu = ring.unit, -quotient
     else :
         # Swap and calculate new mu
         mu, lamb = extendedEuclidean(n-1)
@@ -87,7 +87,11 @@ def extendedEuclidean(n) :
     md.write(f"1. ${gcd} = ({lamb})({dividend}) + ({mu})({divisor})$\n\n")
     return (lamb, mu)
 
-lamb, mu = extendedEuclidean(len(results) - 1)
+if(len(results) != 0) :
+    lamb, mu = extendedEuclidean(len(results) - 1)
+else :
+    # In trivial case where mu divides lambda we do need the division with zero remainder
+    lamb, mu = ring.euclideanDivision(dividend0, divisor0)
 
 md.write(f"### Overall we have: $\lambda = ({lamb})$ and $\mu = ({mu})$\n\n")
 
