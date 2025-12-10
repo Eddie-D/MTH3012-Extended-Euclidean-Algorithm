@@ -20,19 +20,28 @@ def tillValid(GetElement, repeatMessage) :
            valid = False
     return e
 
+def getField() :
+   while True :
+        print("Please choose a field to operate over (Frac[E] (Fractions over a Euclidean Domain), Z/p (Integers mod P))")
+        choice = input()
+        match choice.lower() :
+            case "z/p" | "zp" :
+                return ZpRing()
+            case "q" | "frac" | "e" | "f" | "fr" | "fe" | "frac[e]" | "frac(e)" :
+                return FractionRing()
+        print("That is not a valid ring")
+
 def getEuclideanDomain() :
     while True :
-        print("Please choose a Ring to operate in (Z (Integers), F[X] (Polynomials over a Field), Z[i] (Gaussian Integers))")
+        print("Please choose a Ring to operate in (Z (Integers), F[X] (Polynomials over a Field))")
         choice = input()
         match choice.lower() :
             case "z" :
                 return IntegerRing
 
-            case "f" | "f[X]" | "fx" | "f(x)":
+            case "f" | "f[x]" | "fx" | "f(x)":
                 return PolyRing()
-
-            # case "z[i]" | "i" | "zi" | "z(i)" :
-            #    return GaussIntegerRing
+        print("That is not a valid ring")
 
 class ZpRing :
     def __init__(self, p=None) :
@@ -140,6 +149,7 @@ class Frac :
         return self.num == other.num and self.den == other.den
 
 
+# Ring of polynomials, Character is the letter used for the unknown and ring is the underlying ring
 class PolyRing :
     def __init__(self, ring=None, character=None) :
         if not character :
@@ -151,22 +161,8 @@ class PolyRing :
                 return c
             self.indeterminate = tillValid(getChar, "Enter an alphabetical character")
             
-        if not ring :
-            while(not ring) :
-                print("Please choose a field to operate over (Frac[E] (Fractions over a Euclidean Domain), Z/p (Integers mod P))")
-                choice = input()
-                match choice.lower() :
-                    case "z" :
-                        ring = IntegerRing
+        ring = getField()
 
-                    case "z/p" | "zp" :
-                        # Define the ring
-                        ring = ZpRing()
-                    case "q" | "frac" | "e" | "f" | "fr" | "fe" | "frac[e]" | "frac(e)" :
-                        ring = FractionRing()
-
-                    case "f" | "f[X]" | "fx" | "f(x)":
-                        ring = PolyRing()
         self.ring = ring
         self.zero = Polynomial(ring, [ring.zero], self.indeterminate)
         self.unit = Polynomial(ring, [ring.unit], self.indeterminate)
@@ -190,13 +186,6 @@ class PolyRing :
         while(divisor.length() <= remainder.length()) :
             # Create constant polynomial of the division of the two highest coefficients
             mult = Polynomial(self.ring, [self.ring.zero for _ in range(remainder.length() - divisor.length())] + [remainder.highestCoeff() / divisor.highestCoeff()], self.indeterminate)
-            arr1 = [self.ring.zero for _ in range(remainder.length() - divisor.length())]
-            arr2 = [remainder.highestCoeff() / divisor.highestCoeff()]
-            arr = arr1 + arr2
-            print(f"Mult: {mult}")
-            print(f"Remainder: {remainder}, Mult: {mult}, Divisor: {divisor}")
-            print(f"Divisor*mult: {divisor*mult}")
-            # print("Mult:" + str(mult) + "  Remainder: " + str(remainder[0]) + "  Divisor: " + str(divisor[0]))
             remainder = remainder - (divisor * mult)
             quotient = quotient + mult
 
@@ -281,7 +270,6 @@ class Polynomial :
     def highestCoeff(self) :
         return self.values[-1] if self.length() > 0 else self.ring.zero #Check zero is the reasonable return
 
-
 # IntegerRing is static as it doesn't need paramaters at initialisation
 class IntegerRing :
     zero = 0
@@ -297,5 +285,3 @@ class IntegerRing :
     @staticmethod
     def euclideanDivision(x,y) :
         return (x // y, x % y)
-
-x = FractionRing()

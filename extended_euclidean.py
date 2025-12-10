@@ -16,7 +16,7 @@ def getUserMatrix(n) :
     return np.matrix(rows)
 '''
 
-def euclidean_algorithm(ring, e1, e2, writer=""):
+def euclidean_algorithm(ring, e1, e2, writer=None) :
     # Assign divisor and dividend where 0 keeps track of the originals
     dividend0, divisor0 = (e1, e2) if ring.euclideanFunction(e1) >= ring.euclideanFunction(e2) else (e2, e1)
     dividend, divisor = dividend0, divisor0
@@ -42,7 +42,7 @@ def euclidean_algorithm(ring, e1, e2, writer=""):
 
     return { "gcd":gcd, "results":results }
 
-def extended_euclidean_algorithm(ring, e1, e2, writer="") :
+def extended_euclidean_algorithm(ring, e1, e2, writer=None) :
     euclid = euclidean_algorithm(ring, e1, e2, writer)
     gcd, results = euclid["gcd"], euclid["results"]
     dividend0, divisor0 = (e1, e2) if ring.euclideanFunction(e1) >= ring.euclideanFunction(e2) else (e2, e1)
