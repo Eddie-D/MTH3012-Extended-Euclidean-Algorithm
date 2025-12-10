@@ -1,6 +1,5 @@
-from math import gcd
-from extended_euclidean import euclidean_algorithm
 import operator
+from extended_euclidean import euclidean_algorithm
 
 # We qualify rings by their strongest property. We assign integer strengths. Then if we need a property we check less than or equality.
 # We will pass in strengths at initialisation, eg to create a euclidean domain polynomial ring, we need to 
@@ -21,7 +20,7 @@ def tillValid(GetElement, repeatMessage) :
     return e
 
 def getField() :
-   while True :
+    while True :
         print("Please choose a field to operate over (Frac[E] (Fractions over a Euclidean Domain), Z/p (Integers mod P))")
         choice = input()
         match choice.lower() :
@@ -52,7 +51,7 @@ class ZpRing :
         self.unit = Zp(self.p, 1)
         self.zero = Zp(self.p, 0)
 
-    def consoleElement (self) :
+    def console_element (self) :
         return Zp(self.p, tillValid(lambda: int(input()), f"Please choose an integer mod {self.p}"))
 
 class Zp:
@@ -101,15 +100,15 @@ class FractionRing :
         self.zero = Frac(ring, ring.zero, ring.unit)
         self.ring = ring
 
-    def consoleElement (self) :
+    def console_element (self) :
         if self.ring == IntegerRing :
             return tillValid(lambda: Frac(self.ring, *[int(x) for x in input().split("/")]), "Enter a fraction in the form X/Y for integers X and Y")
 
         else :
             print("Enter the numerator of the Fraction")
-            num = self.ring.consoleElement()
+            num = self.ring.console_element()
             print("Enter the denominator of the Fraction")
-            den = self.ring.consoleElement()
+            den = self.ring.console_element()
             return Frac(self.ring, num, den)
 
 class Frac :
@@ -167,7 +166,7 @@ class PolyRing :
         self.zero = Polynomial(ring, [ring.zero], self.indeterminate)
         self.unit = Polynomial(ring, [ring.unit], self.indeterminate)
     
-    def consoleElement (self) :
+    def console_element (self) :
         print("Enter a degree for the polynomial")
         degree = tillValid(lambda: int(input()), "Enter an integer degree")
 
@@ -175,7 +174,7 @@ class PolyRing :
         for i in range(degree,-1,-1) :
             # Difficult to make gramatical sense
             print(f"Enter the coefficient for X^{i} by entering a ring value:")
-            values.insert(0, self.ring.consoleElement())
+            values.insert(0, self.ring.console_element())
         return Polynomial(self.ring, values, self.indeterminate)
 
     # The euclidean division over polynomials is polynomial long division
@@ -275,8 +274,8 @@ class IntegerRing :
     zero = 0
     unit = 1
     @staticmethod
-    def consoleElement() :
-        return tillValid(lambda: int(input()), f"Please choose an integer")
+    def console_element() :
+        return tillValid(lambda: int(input()), "Please choose an integer")
     
     @staticmethod
     def euclideanFunction(x) :

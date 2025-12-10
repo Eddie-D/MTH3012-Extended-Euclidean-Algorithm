@@ -7,10 +7,10 @@ ring = getEuclideanDomain()
 
 print("Enter the two elements to run the Extended Euclidean Algorithm on")
 print("Enter the first element:")
-e1 = ring.consoleElement()
+e1 = ring.console_element()
 
 print("Enter the second element:")
-e2 = ring.consoleElement()
+e2 = ring.console_element()
 
 path = "./ExtendedEuclideanOutput.md"
 # Delete the file if it already exists as it will be replaced
