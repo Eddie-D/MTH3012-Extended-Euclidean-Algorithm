@@ -18,7 +18,7 @@ def getUserMatrix(n) :
 
 def euclidean_algorithm(ring, e1, e2, writer=""):
     # Assign divisor and dividend where 0 keeps track of the originals
-    dividend0, divisor0 = (e1, e2) if e1.euclideanFunction() >= e2.euclideanFunction() else (e2, e1)
+    dividend0, divisor0 = (e1, e2) if ring.euclideanFunction(e1) >= ring.euclideanFunction(e2) else (e2, e1)
     dividend, divisor = dividend0, divisor0
 
     if writer :
@@ -45,11 +45,8 @@ def euclidean_algorithm(ring, e1, e2, writer=""):
 def extended_euclidean_algorithm(ring, e1, e2, writer="") :
     euclid = euclidean_algorithm(ring, e1, e2, writer)
     gcd, results = euclid["gcd"], euclid["results"]
-    dividend0, divisor0 = (e1, e2) if e1.euclideanFunction() >= e2.euclideanFunction() else (e2, e1)
+    dividend0, divisor0 = (e1, e2) if ring.euclideanFunction(e1) >= ring.euclideanFunction(e2) else (e2, e1)
 
-    if writer :
-        writer.write(f"### We use the Extended Euclidean algorithm to find coefficients $\lambda$, $\mu$ s.t. $\lambda ({dividend0}) + \mu ({divisor0}) = {gcd}$\n\n")
-        
     # Remove result with zero remainder
     results.reverse()
     results.pop(0)
@@ -69,12 +66,18 @@ def extended_euclidean_algorithm(ring, e1, e2, writer="") :
         return (lamb, mu)
 
     if(len(results) != 0) :
+        if writer :
+            writer.write(f"### We use the Extended Euclidean algorithm to find coefficients $\lambda$, $\mu$ s.t. $\lambda ({dividend0}) + \mu ({divisor0}) = {gcd}$\n\n")
+        
         lamb, mu = extended_euclidean(len(results) - 1)
-    else :
-        # In trivial case where mu divides lambda we do need the division with zero remainder
-        lamb, mu = ring.euclideanDivision(dividend0, divisor0)
 
-    if writer:
-        writer.write(f"### Overall we have: $\lambda = ({lamb})$ and $\mu = ({mu})$\n\n")
+        if writer:
+            writer.write(f"### Overall we have: $\lambda = ({lamb})$ and $\mu = ({mu})$\n\n")
+    else :
+        # In trivial case, mu is the gcd
+        lamb, mu = ring.zero, ring.unit
+
+        if writer :
+            writer.write(f"### We have trivially that $({lamb})({dividend0}) + ({mu})({divisor0}) = {gcd}$\n\n")
 
     print(f"Checksum, {gcd} = {(lamb*dividend0) + (mu*divisor0)}")

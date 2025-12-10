@@ -1,27 +1,9 @@
-from rings import IntegerRing, ZpRing, FractionRing, PolyRing
+from rings import getEuclideanDomain
 from extended_euclidean import extended_euclidean_algorithm
 import os
 
 # Setup ring-specific variables
-ring = None
-while not ring :
-    print("Please choose a Ring to operate in (Q, Z/p, Mn, F[X])")
-    choice = input()
-    match choice.lower() :
-        case "z" :
-            ring = IntegerRing
-
-        case "z/p" | "zp" :
-            ring = ZpRing()
-
-        case "q" :
-            ring = FractionRing()
-
-        case "mn" | "m":
-            pass
-
-        case "f" | "f[X]" | "fx" | "f(x)":
-            ring = PolyRing()
+ring = getEuclideanDomain()
 
 print("Enter the two elements to run the Extended Euclidean Algorithm on")
 print("Enter the first element:")

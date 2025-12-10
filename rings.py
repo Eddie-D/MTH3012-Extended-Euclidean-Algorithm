@@ -1,6 +1,9 @@
 from math import gcd
+from extended_euclidean import euclidean_algorithm
 import operator
 
+# We qualify rings by their strongest property. We assign integer strengths. Then if we need a property we check less than or equality.
+# We will pass in strengths at initialisation, eg to create a euclidean domain polynomial ring, we need to 
 # Helper function to get data from console
 def tillValid(GetElement, repeatMessage) :
     valid = False
@@ -16,6 +19,20 @@ def tillValid(GetElement, repeatMessage) :
            print(repeatMessage)
            valid = False
     return e
+
+def getEuclideanDomain() :
+    while True :
+        print("Please choose a Ring to operate in (Z (Integers), F[X] (Polynomials over a Field), Z[i] (Gaussian Integers))")
+        choice = input()
+        match choice.lower() :
+            case "z" :
+                return IntegerRing
+
+            case "f" | "f[X]" | "fx" | "f(x)":
+                return PolyRing()
+
+            # case "z[i]" | "i" | "zi" | "z(i)" :
+            #    return GaussIntegerRing
 
 class ZpRing :
     def __init__(self, p=None) :
@@ -34,20 +51,19 @@ class Zp:
         self.p = p
         self.value = int(value) % p
 
-    def checkArithMatch(self, other) :
-        if (self.p != other.p) : raise Exception("Modular arithmetic mismatch")
+    def check_arith_match(self, other) :
+        if self.p != other.p : raise Exception("Modular arithmetic mismatch")
     
     def __add__ (self, other) :
-        # print(f"Zp adding, self: {self}, other: {other}, yields: {Zp(self.p, self.value + other.value)}")
-        self.checkArithMatch(other)
+        self.check_arith_match(other)
         return Zp(self.p, self.value + other.value)
     
     def __sub__ (self, other) :
-        self.checkArithMatch(other)
+        self.check_arith_match(other)
         return Zp(self.p, self.value - other.value)
     
     def __mul__ (self, other) :
-        self.checkArithMatch(other)
+        self.check_arith_match(other)
         return Zp(self.p, self.value * other.value)
 
     def __neg__ (self):
@@ -58,8 +74,8 @@ class Zp:
     
     def __truediv__(self, other) :
         # Calculate the inverse by fermats little theorem
-        self.checkArithMatch(other)
-        for i in range(self.p - 2) :
+        self.check_arith_match(other)
+        for _ in range(self.p - 2) :
             self *= other
         return self
 
@@ -67,45 +83,61 @@ class Zp:
         # Don't check arithmatch as we instead use n to check if values are equal
         return self.value == other.value and self.p == other.p
 
+
+class FractionRing :
+    def __init__(self, ring=None) :
+        if not ring :
+            ring = getEuclideanDomain()
+        self.unit = Frac(ring, ring.unit, ring.unit)
+        self.zero = Frac(ring, ring.zero, ring.unit)
+        self.ring = ring
+
+    def consoleElement (self) :
+        if self.ring == IntegerRing :
+            return tillValid(lambda: Frac(self.ring, *[int(x) for x in input().split("/")]), "Enter a fraction in the form X/Y for integers X and Y")
+
+        else :
+            print("Enter the numerator of the Fraction")
+            num = self.ring.consoleElement()
+            print("Enter the denominator of the Fraction")
+            den = self.ring.consoleElement()
+            return Frac(self.ring, num, den)
+
 class Frac :
-    def __init__ (self, num, den=1) :
-        if den == 0 : raise Exception("Fraction with denominator of zero")
+    def __init__ (self, ring, num, den) :
+        if den == ring.zero : raise Exception("Fraction with denominator of zero")
         # Re-write the fraction as an irreducible
-        # Ensure den is non-negative (solves issue of -1/-1 instead of 1/1)
-        factor = (1 if den > 0 else -1) * gcd(num, den)
-        self.num = int(num / factor)
-        self.den = int(den / factor)
+        self.ring = ring
+        if num == ring.zero :
+            self.num = ring.zero
+            self.den = ring.unit
+        else :
+            gcd = euclidean_algorithm(ring, num, den)["gcd"]
+            self.num, _ = ring.euclideanDivision(num, gcd)
+            self.den, _ = ring.euclideanDivision(den, gcd)
     
     def __add__ (self, other) :
-        return Frac(self.num * other.den + other.num * self.den, self.den * other.den)
+        return Frac(self.ring, self.num * other.den + other.num * self.den, self.den * other.den)
 
     def __sub__(self, other) :
-        return Frac(self.num * other.den - other.num * self.den, self.den * other.den)
+        return Frac(self.ring, self.num * other.den - other.num * self.den, self.den * other.den)
 
     def __mul__(self, other) :
-        return Frac(self.num * other.num, self.den * other.den)
+        return Frac(self.ring, self.num * other.num, self.den * other.den)
 
     def __neg__(self):
-        return Frac(-self.num, self.den) 
+        return Frac(self.ring, -self.num, self.den) 
 
     def __truediv__(self, other) :
-        return Frac(self.num * other.den, self.den * other.num)
+        return Frac(self.ring, self.num * other.den, self.den * other.num)
     
     def __str__(self) :
-        if self.den == 1 : return str(self.num)
+        if self.den == self.ring.unit : return str(self.num)
         else: return f"\\frac{{{self.num}}}{{{self.den}}}"
 
     def __eq__(self, other) :
         # Can check numerator and denominator equal as we store fractions uniquely as irreducibles with negatives ontop
         return self.num == other.num and self.den == other.den
-
-# FractionRing is static as it doesn't need paramaters at initialisation (here fractions are only over the integers, not an integral domain)
-class FractionRing :
-    zero = Frac(0,1)
-    unit = Frac(1,1)
-    @staticmethod
-    def consoleElement () :
-        return tillValid(lambda: Frac(*[int(x) for x in input().split("/")]), "Enter a fraction in the form X/Y for integers X and Y")
 
 
 class PolyRing :
@@ -121,7 +153,7 @@ class PolyRing :
             
         if not ring :
             while(not ring) :
-                print("Please choose a field to operate over (Q, Z/p)")
+                print("Please choose a field to operate over (Frac[E] (Fractions over a Euclidean Domain), Z/p (Integers mod P))")
                 choice = input()
                 match choice.lower() :
                     case "z" :
@@ -130,10 +162,8 @@ class PolyRing :
                     case "z/p" | "zp" :
                         # Define the ring
                         ring = ZpRing()
-                    case "q" :
+                    case "q" | "frac" | "e" | "f" | "fr" | "fe" | "frac[e]" | "frac(e)" :
                         ring = FractionRing()
-                        # Instantiation not necessary (assumed over integers)
-                        ring = FractionRing
 
                     case "f" | "f[X]" | "fx" | "f(x)":
                         ring = PolyRing()
@@ -172,6 +202,11 @@ class PolyRing :
 
         return (quotient, remainder)
 
+    # Not the traditional euclidean function in F[X] which is deg(f), but is a valid one nonetheless
+    @staticmethod
+    def euclideanFunction(p) :
+        return p.length()
+    
 class Polynomial :
     # We store polynomials as a + bx + cx^2 + ... + dx^n = [a b c ... d] 
     def __init__(self, ring, values, indeterminate="X") :
@@ -243,11 +278,6 @@ class Polynomial :
     def __neg__(self) :
         return Polynomial(self.ring, [-x for x in self.values], self.indeterminate)
     
-    
-    # Not the traditional euclidean function in F[X] which is deg(f), but is a valid one nonetheless
-    def euclideanFunction(self) :
-        return self.length()
-    
     def highestCoeff(self) :
         return self.values[-1] if self.length() > 0 else self.ring.zero #Check zero is the reasonable return
 
@@ -258,4 +288,14 @@ class IntegerRing :
     unit = 1
     @staticmethod
     def consoleElement() :
-        return tillValid(lambda: int(input()), f"Please choose an integer") 
+        return tillValid(lambda: int(input()), f"Please choose an integer")
+    
+    @staticmethod
+    def euclideanFunction(x) :
+        return abs(x)
+    
+    @staticmethod
+    def euclideanDivision(x,y) :
+        return (x // y, x % y)
+
+x = FractionRing()
