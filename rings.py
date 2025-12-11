@@ -275,7 +275,7 @@ class IntegerRing :
     unit = 1
     @staticmethod
     def console_element() :
-        return tillValid(lambda: int(input()), "Please choose an integer")
+        return tillValid(lambda: int(input()), f"Please choose an integer")
     
     @staticmethod
     def euclideanFunction(x) :
