@@ -172,7 +172,6 @@ class PolyRing :
 
         values = []
         for i in range(degree,-1,-1) :
-            # Difficult to make gramatical sense
             print(f"Enter the coefficient for X^{i} by entering a ring value:")
             values.insert(0, self.ring.console_element())
         return Polynomial(self.ring, values, self.indeterminate)
@@ -183,8 +182,8 @@ class PolyRing :
         quotient = self.zero
 
         while(divisor.length() <= remainder.length()) :
-            # Create constant polynomial of the division of the two highest coefficients
-            mult = Polynomial(self.ring, [self.ring.zero for _ in range(remainder.length() - divisor.length())] + [remainder.highestCoeff() / divisor.highestCoeff()], self.indeterminate)
+            # Create the monomial multiplier
+            mult = Polynomial(self.ring, [self.ring.zero] * (remainder.length() - divisor.length()) + [remainder.highestCoeff() / divisor.highestCoeff()], self.indeterminate)
             remainder = remainder - (divisor * mult)
             quotient = quotient + mult
 
