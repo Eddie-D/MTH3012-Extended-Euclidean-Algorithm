@@ -48,17 +48,16 @@ def extended_euclidean_algorithm(ring, e1, e2, writer=None) :
     dividend0, divisor0 = (e1, e2) if ring.euclideanFunction(e1) >= ring.euclideanFunction(e2) else (e2, e1)
 
     # Remove result with zero remainder
-    results.reverse()
-    results.pop(0)
+    results.pop()
 
     # Design is discussed in the report
     def extended_euclidean(n) :
         dividend, quotient, divisor = results[n]
-        if n == 0 :
+        if n == len(results) - 1 :
             lamb, mu = ring.unit, -quotient
         else :
             # Swap and calculate new mu
-            mu, lamb = extended_euclidean(n-1)
+            mu, lamb = extended_euclidean(n+1)
             mu = mu - (quotient * lamb)
 
         if writer :
@@ -69,7 +68,7 @@ def extended_euclidean_algorithm(ring, e1, e2, writer=None) :
         if writer :
             writer.write(f"### We use the Extended Euclidean algorithm to find coefficients $\lambda$, $\mu$ s.t. $\lambda ({dividend0}) + \mu ({divisor0}) = {gcd}$\n\n")
         
-        lamb, mu = extended_euclidean(len(results) - 1)
+        lamb, mu = extended_euclidean(0)
 
         if writer:
             writer.write(f"### Overall we have: $\lambda = ({lamb})$ and $\mu = ({mu})$\n\n")
