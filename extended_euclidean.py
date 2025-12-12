@@ -22,7 +22,8 @@ def euclidean_algorithm(ring, e1, e2, writer=None) :
     dividend, divisor = dividend0, divisor0
 
     if writer :
-        writer.write(f"### We use the Euclidean Algorithm to find the gcd of ${divisor0}$ and ${dividend0}$\n\n")
+        writer.write(f"\\textbf{{We use the Euclidean Algorithm to find the gcd of ${divisor0}$ and ${dividend0}$}} \\\\\n")
+        writer.write("\\begin{align*} \n")
     results = []
     remainder = None
 
@@ -31,14 +32,15 @@ def euclidean_algorithm(ring, e1, e2, writer=None) :
         results.append([dividend, quotient, divisor])
 
         if writer :
-            writer.write(f"1. ${dividend} = ({quotient})({divisor}) + ({remainder})$\n\n")
+            writer.write(f"{dividend} &= ({quotient})({divisor}) + ({remainder})   \\\\\n")
 
         dividend = divisor
         divisor = remainder
 
     gcd = dividend
     if writer :
-        writer.write(f"Overall the gcd is ${gcd}$\n\n")
+        writer.write("\\end{align*} \n")
+        writer.write(f"\\textbf{{Overall the gcd is ${gcd}$}} \\\\\n")
 
     return { "gcd":gcd, "results":results }
 
@@ -61,22 +63,22 @@ def extended_euclidean_algorithm(ring, e1, e2, writer=None) :
             mu = mu - (quotient * lamb)
 
         if writer :
-            writer.write(f"1. ${gcd} = ({lamb})({dividend}) + ({mu})({divisor})$\n\n")
+            writer.write(f"{gcd} &= ({lamb})({dividend}) + ({mu})({divisor})    \\\\\n")
         return (lamb, mu)
 
     if(len(results) != 0) :
         if writer :
-            writer.write(f"### We use the Extended Euclidean algorithm to find coefficients $\lambda$, $\mu$ s.t. $\lambda ({dividend0}) + \mu ({divisor0}) = {gcd}$\n\n")
+            writer.write(f"\\textbf{{We use the Extended Euclidean algorithm to find coefficients $\lambda$, $\mu$ s.t. $\lambda ({dividend0}) + \mu ({divisor0}) = {gcd}$}} \\\\\n")
+        writer.write("\\begin{align*} \n")
         
         lamb, mu = extended_euclidean(0)
 
         if writer:
-            writer.write(f"### Overall we have: $\lambda = ({lamb})$ and $\mu = ({mu})$\n\n")
+            writer.write("\\end{align*} \n")
+            writer.write(f"\\textbf{{Overall we have: $\lambda = ({lamb})$ and $\mu = ({mu})$}} \\\\\n")
     else :
         # In trivial case, mu is the gcd
         lamb, mu = ring.zero, ring.unit
 
         if writer :
-            writer.write(f"### We have trivially that $({lamb})({dividend0}) + ({mu})({divisor0}) = {gcd}$\n\n")
-
-    print(f"Checksum, {gcd} = {(lamb*dividend0) + (mu*divisor0)}")
+            writer.write(f"\\textbf{{We have trivially that $({lamb})({dividend0}) + ({mu})({divisor0}) = {gcd}$}} \\\\\n")
