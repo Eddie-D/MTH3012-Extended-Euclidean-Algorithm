@@ -112,7 +112,8 @@ class FractionRing :
             return Frac(self.ring, num, den)
 
 class Frac :
-    def __init__ (self, ring, num, den) :
+    def __init__ (self, ring, num, den=None) :
+        if not den : den = ring.unit
         if den == ring.zero : raise Exception("Fraction with denominator of zero")
         # Re-write the fraction as an irreducible
         self.ring = ring
@@ -198,6 +199,7 @@ class Polynomial :
     # We store polynomials as a + bx + cx^2 + ... + dx^n = [a b c ... d] 
     def __init__(self, ring, values, indeterminate="X") :
         self.indeterminate = indeterminate
+        # The underlying ring
         self.ring = ring
         # Remove leading zeroes
         while len(values) > 0 and values[-1] == ring.zero:
@@ -234,7 +236,7 @@ class Polynomial :
 
         def withLeadingZeroes(l, length) :
             # Add leading zeroes till the list goes up to the desired length
-            return l + [self.ring.zero for _ in range(length - len(l))]
+            return l + [self.ring.zero] * (length - len(l))
         
         p1, p2 = withLeadingZeroes(self.values, length), withLeadingZeroes(other.values, length)
         return Polynomial(self.ring, [op(p1[i], p2[i]) for i in range(length)], self.indeterminate)
@@ -248,8 +250,7 @@ class Polynomial :
     def __mul__(self, other) :
         total = Polynomial(self.ring, [self.ring.zero], self.indeterminate)
         for i, x in enumerate(self.values) :
-            total = total + Polynomial(self.ring, [self.ring.zero for _ in range(i)] + [x*y for y in other.values], self.indeterminate)
-            # print(f"Total: {total}")
+            total = total + Polynomial(self.ring, [self.ring.zero] * i + [x*y for y in other.values], self.indeterminate)
         return total
     
     def __eq__(self, other) :
@@ -266,7 +267,7 @@ class Polynomial :
         return Polynomial(self.ring, [-x for x in self.values], self.indeterminate)
     
     def highestCoeff(self) :
-        return self.values[-1] if self.length() > 0 else self.ring.zero #Check zero is the reasonable return
+        return self.values[-1] if self.length() > 0 else self.ring.zero
 
 # IntegerRing is static as it doesn't need paramaters at initialisation
 class IntegerRing :
