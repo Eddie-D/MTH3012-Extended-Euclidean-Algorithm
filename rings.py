@@ -1,8 +1,6 @@
 import operator
 from extended_euclidean import euclidean_algorithm
 
-# We qualify rings by their strongest property. We assign integer strengths. Then if we need a property we check less than or equality.
-# We will pass in strengths at initialisation, eg to create a euclidean domain polynomial ring, we need to 
 # Helper function to get data from console
 def tillValid(GetElement, repeatMessage) :
     valid = False
@@ -171,7 +169,7 @@ class PolyRing :
 
         values = []
         for i in range(degree,-1,-1) :
-            print(f"Enter the coefficient for X^{i} by entering a ring value:")
+            print(f"Enter the coefficient for {self.indeterminate}^{i} by entering a ring value:")
             values.insert(0, self.ring.console_element())
         return Polynomial(self.ring, values, self.indeterminate)
 

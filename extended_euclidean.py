@@ -1,21 +1,3 @@
-# We will use operator overloading to represent rings where we overload so that a ring R has operations + and * 
-
-# We create classes for the different types of rings
-
-# We impose the following qualities on our ring objects:
-# Implementation of *, + and -
-# Implementation of a 'fromConsole' method that allows the user to input the ring element (this is enforced mostly so matrices can blend in)
-
-# ASSUME FOR NOW THAT DIVISOR IS MONIC!
-'''
-def getUserMatrix(n) :
-    rows = []
-    for i in range(n) :
-        print("Please enter the values for row", i)
-        tillValid(lambda: rows.append([int(x) for x in input().split(' ')]), "Please enter the integer values separated by spaces")
-    return np.matrix(rows)
-'''
-
 def euclidean_algorithm(ring, e1, e2, writer=None) :
     # Assign divisor and dividend where 0 keeps track of the originals
     dividend0, divisor0 = (e1, e2) if ring.euclideanFunction(e1) >= ring.euclideanFunction(e2) else (e2, e1)
