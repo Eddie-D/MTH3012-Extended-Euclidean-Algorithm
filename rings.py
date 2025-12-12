@@ -145,9 +145,7 @@ class Frac :
         else: return f"\\frac{{{self.num}}}{{{self.den}}}"
 
     def __eq__(self, other) :
-        # Can check numerator and denominator equal as we store fractions uniquely as irreducibles with negatives ontop
-        return self.num == other.num and self.den == other.den
-
+        return self.num * other.den == self.den * other.num
 
 # Ring of polynomials, Character is the letter used for the unknown and ring is the underlying ring
 class PolyRing :
