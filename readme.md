@@ -1,3 +1,7 @@
+# Extended Euclidean Algorithm in Python (LaTeX Output)
+
+An object-oriented Python architecture modeling algebraic rings and providing a recursive implementation of the Extended Euclidean Algorithm.
+
 ## Mathematical Proofs & Documentation
 
 The codebase is accompanied by a comprehensive academic whitepaper (`MTH_3012_Algebra.pdf`), which formally proves the core algorithms and details the theoretical framework.
