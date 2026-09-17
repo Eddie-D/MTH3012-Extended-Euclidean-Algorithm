@@ -1,3 +1,11 @@
-# A Python Program to Calculate Euclidean Division on Polynomials in R
-Run the program using 'python3 polynomial-long-division.py [a b c] [d e f]' where '[a b c]' are the coefficients of the dividend and '[d e f]' are the coefficients of the divisor.
-We denote a polynomial 3X^3 + 2X by [3 0 2 0].
+# Extended Euclidean Algorithm Programmed in Python, Outputting Latex
+An object-oriented Python architecture modeling rings and a recursive implementation of the Extended Euclidean Algorithm.
+
+## Proven
+The code is accompanied by a paper proving the core algorithms, and detailing the key aspects.
+
+## Latex
+The output produced is well formatted latex, so the code functions as a tool for producing Extended Euclidean Algorithm examples.
+
+## Dunder Methods
+The code uses dunder methods at its core as it provides an immediate, polymorphic way to separate the algorithm from the data structures.
