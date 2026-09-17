@@ -1,11 +1,11 @@
-# Extended Euclidean Algorithm Programmed in Python, Outputting Latex
-An object-oriented Python architecture modeling rings and a recursive implementation of the Extended Euclidean Algorithm.
+## Mathematical Proofs & Documentation
 
-## Proven
-The code is accompanied by a paper proving the core algorithms, and detailing the key aspects.
+The codebase is accompanied by a comprehensive academic whitepaper (`MTH_3012_Algebra.pdf`), which formally proves the core algorithms and details the theoretical framework.
 
-## Latex
-The output produced is well formatted latex, so the code functions as a tool for producing Extended Euclidean Algorithm examples.
+## Automated LaTeX Generation
 
-## Dunder Methods
-The code uses dunder methods at its core as it provides an immediate, polymorphic way to separate the algorithm from the data structures.
+The program dynamically outputs step-by-step calculations in a clean LaTeX format, functioning directly as a tool for generating Extended Euclidean Algorithm examples.
+
+## Polymorphic Design via Dunder Methods
+
+The architecture relies heavily on Python dunder methods, establishing a polymorphic design that cleanly decouples the algorithmic logic from the underlying data structures.
